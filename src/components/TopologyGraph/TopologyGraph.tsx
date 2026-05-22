@@ -9,7 +9,6 @@ import {
     applyRectangleLayoutToCy,
     clearRectangleLayoutCache,
     getContextCount,
-    TopologyGrid
 } from '@/features/layoutTopology';
 import {buildGraphElements, graphStyles} from '@/entities/TopologyData/buildGraphElements';
 import {clearGraphStateStorage, hasGraphStateInStorage, loadGraphSave, savedStateToPositions} from '@/features/graphSaveStorage';

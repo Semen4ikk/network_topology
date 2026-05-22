@@ -1,5 +1,5 @@
 import styles from './Footer.module.css'
-import {FaGithub, FaTelegramPlane} from "react-icons/fa";
+import { FaTelegramPlane} from "react-icons/fa";
 import {SiHbomax} from "react-icons/si";
 import {IoLogoGithub} from "react-icons/io";
 
