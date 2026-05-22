@@ -1,0 +1,36 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: calc(100vh - 120px);
+    padding: 16px 24px;
+    gap: 12px;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 16px;
+}
+
+.layoutBtn {
+    padding: 10px 18px;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    background: #1e293b;
+    color: #f8fafc;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.layoutBtn:hover {
+    background: #334155;
+}
+
+.layoutMessage {
+    margin: 0;
+    font-size: 13px;
+    color: #64748b;
+}
