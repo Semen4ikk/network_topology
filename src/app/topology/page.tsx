@@ -1,18 +1,18 @@
 'use client';
 
-import { useRef} from 'react';
+import { useRef } from 'react';
 import styles from './page.module.css';
-import {TopologyGraph,type TopologyGraphHandle} from '@/components/TopologyGraph/TopologyGraph';
+import {
+    TopologyGraph,
+    type TopologyGraphHandle,
+} from '@/components/TopologyGraph/TopologyGraph';
+import { TopologySearch } from '@/components/TopologySearch/TopologySearch';
 
 export default function Home() {
     const graphRef = useRef<TopologyGraphHandle>(null);
+
     const handleReset = () => {
-        const result = graphRef.current?.resetAndRedraw() ?? {
-            contextCount: 0,
-        };
-        if (result.contextCount === 0) {
-            return;
-        }
+        graphRef.current?.resetAndRedraw();
     };
 
     return (
@@ -25,6 +25,7 @@ export default function Home() {
                 >
                     Сбросить и перерисовать
                 </button>
+                <TopologySearch graphRef={graphRef} />
             </section>
             <TopologyGraph ref={graphRef} />
         </div>

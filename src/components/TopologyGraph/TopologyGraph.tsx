@@ -13,9 +13,12 @@ import {
 import {buildGraphElements, graphStyles} from '@/entities/TopologyData/buildGraphElements';
 import {clearGraphStateStorage, hasGraphStateInStorage, loadGraphSave, savedStateToPositions} from '@/features/graphSaveStorage';
 import { useGraphState } from '@/entities/TopologyData/hooks/useGraphState';
-import { MdCenterFocusStrong } from "react-icons/md";
-import {FaMinus, FaPlus} from "react-icons/fa";
+import { MdCenterFocusStrong } from 'react-icons/md';
+import { FaMinus, FaPlus } from 'react-icons/fa';
+import type { NodePosition } from '@/entities/TopologyData/layoutShared';
+
 const FIT_PADDING = 48;
+const FOCUS_ZOOM = 1.5;
 
 function fitGraph(cy: Core) {
     cy.resize();
@@ -29,6 +32,7 @@ function fitGraph(cy: Core) {
 
 export type TopologyGraphHandle = {
     resetAndRedraw: () => { contextCount: number };
+    focusOnNode: (nodeId: string, position: NodePosition) => boolean;
 };
 
 export const TopologyGraph = forwardRef<TopologyGraphHandle>(
@@ -147,7 +151,40 @@ export const TopologyGraph = forwardRef<TopologyGraphHandle>(
             return { contextCount: getContextCount(filtered) };
         }, [mountGraph]);
 
-        useImperativeHandle(ref, () => ({ resetAndRedraw }), [resetAndRedraw]);
+        const focusOnNode = useCallback(
+            (nodeId: string, _position: NodePosition) => {
+                const cy = cyRef.current;
+                if (!cy) return false;
+
+                const node = cy.getElementById(nodeId);
+                if (!node.nonempty()) return false;
+
+                const zoom = Math.min(
+                    Math.max(FOCUS_ZOOM, cy.minZoom()),
+                    cy.maxZoom(),
+                );
+
+                cy.animate(
+                    {
+                        center: { eles: node },
+                        zoom,
+                    },
+                    { duration: 280 },
+                );
+
+                cy.nodes().unselect();
+                node.select();
+
+                return true;
+            },
+            [],
+        );
+
+        useImperativeHandle(
+            ref,
+            () => ({ resetAndRedraw, focusOnNode }),
+            [resetAndRedraw, focusOnNode],
+        );
 
         useEffect(() => {
             if (!data) return;

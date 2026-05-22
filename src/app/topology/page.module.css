@@ -10,14 +10,14 @@
 .actions {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px 16px;
 }
 
 .layoutBtn {
     padding: 10px 18px;
     border: 1px solid #1e22a9;
-    border-radius: 8px;
+    border-radius: 10px;
     background: #1e22a9;
     color: #f8fafc;
     font-size: 16px;

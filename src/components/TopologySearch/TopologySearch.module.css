@@ -1,0 +1,65 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 280px;
+    max-width: 480px;
+}
+
+.searchRow {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+}
+
+.input {
+    flex: 1;
+    min-width: 0;
+    padding: 11px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    font-style: normal;
+    font-family: "Proxima Nova", sans-serif;
+    color: #0f172a;
+    background: #fff;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #1e22a9;
+    box-shadow: 0 0 0 2px rgba(30, 34, 169, 0.15);
+}
+
+.findBtn {
+    flex-shrink: 0;
+    padding: 10px 18px;
+    border: 1px solid #1e22a9;
+    border-radius: 10px;
+    background: #1e22a9;
+    color: #f8fafc;
+    font-size: 16px;
+    font-weight: 600;
+    font-style: normal;
+    font-family: "Proxima Nova", sans-serif;
+    cursor: pointer;
+}
+
+.findBtn:hover {
+    background: #282dda;
+    border-color: #282dda;
+}
+
+.messageOk {
+    margin: 0;
+    font-size: 13px;
+    color: #16a34a;
+}
+
+.messageError {
+    margin: 0;
+    font-size: 13px;
+    color: red;
+}

@@ -116,6 +116,12 @@ export function clearGraphStateStorage(): void {
     localStorage.removeItem(STORAGE_KEY);
 }
 
+export function getNodePositionFromStorage(nodeId: string, currentNodeIds: string[],): NodePosition | null {
+    const saved = loadGraphSave(currentNodeIds);
+    if (!saved) return null;
+    return saved.positions[nodeId] ?? null;
+}
+
 export function applyViewportFromSaved(cy: Core, saved: SavedGraphState): void {
     if (saved.zoom !== undefined) {
         cy.zoom(saved.zoom);
