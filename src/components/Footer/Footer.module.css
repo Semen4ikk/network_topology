@@ -1,0 +1,56 @@
+.footer{
+    width: 100%;
+    display: grid;
+    background: #212529;
+    gap: 16px;
+}
+.hidden{
+    height: 10px;
+}
+.line{
+    width: 98%;
+    height: 1px;
+    background-color: #7a7c7f;
+    border: none;
+}
+.gridParent{
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: center;
+    justify-items: center;
+    gap: 12px 24px;
+    padding-bottom: 16px;
+}
+
+.myGithub{
+    grid-column: 1 / -1;
+    justify-self: center;
+    text-align: center;
+    font-size: 16px;
+    text-decoration: none;
+    color: #7a7c7f;
+
+}
+.myGithub:hover{
+    color: #f2f3f5;
+    transition: color 0.5s ease;
+    cursor:  pointer;
+}
+.myGithub:visited, .myGithub:active{
+    color: #7a7c7f;
+}
+.myProfile{
+    width: 5px;
+    font-size: 25px;
+    text-decoration: none;
+    color: #7a7c7f;
+
+}
+.myProfile:hover{
+    color: #f2f3f5;
+    transition: color 0.5s ease;
+    cursor:  pointer;
+}
+.myProfile:visited, .myProfile:active{
+    color: #7a7c7f;
+}

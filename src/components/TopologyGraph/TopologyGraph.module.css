@@ -31,20 +31,21 @@
 }
 
 .toolBtn {
-    width: 32px;
-    height: 32px;
-    border: 1px solid #cbd5e1;
+    padding-top: 5px;
+    width: auto;
+    height: auto;
+    border: 1px solid #eff1f4;
     border-radius: 6px;
-    background: #fff;
-    color: #334155;
+    background: #eff1f4;
+    color: #000000;
     font-size: 18px;
-    line-height: 1;
     cursor: pointer;
 }
 
 .toolBtn:hover {
-    background: #f1f5f9;
-    border-color: #94a3b8;
+    background: #1e22a9;
+    border-color: #1e22a9;
+    color: white;
 }
 
 .hint {

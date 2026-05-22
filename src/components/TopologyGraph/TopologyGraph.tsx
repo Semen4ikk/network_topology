@@ -5,11 +5,17 @@ import cytoscape, { type Core } from 'cytoscape';
 import styles from './TopologyGraph.module.css';
 import { useTopologyQuery } from '@/entities/TopologyData/query';
 import { filterTopology } from '@/features/filterTopology';
-import {applyRectangleLayoutToCy, clearRectangleLayoutCache, getContextCount} from '@/features/layoutTopology';
+import {
+    applyRectangleLayoutToCy,
+    clearRectangleLayoutCache,
+    getContextCount,
+    TopologyGrid
+} from '@/features/layoutTopology';
 import {buildGraphElements, graphStyles} from '@/entities/TopologyData/buildGraphElements';
 import {clearGraphStateStorage, hasGraphStateInStorage, loadGraphSave, savedStateToPositions} from '@/features/graphSaveStorage';
 import { useGraphState } from '@/entities/TopologyData/hooks/useGraphState';
-
+import { MdCenterFocusStrong } from "react-icons/md";
+import {FaMinus, FaPlus} from "react-icons/fa";
 const FIT_PADDING = 48;
 
 function fitGraph(cy: Core) {
@@ -97,7 +103,7 @@ export const TopologyGraph = forwardRef<TopologyGraphHandle>(
                     container: containerRef.current,
                     elements,
                     style: graphStyles,
-                    wheelSensitivity: 0.25,
+                    wheelSensitivity: 0.35, //TODO хз мб добавить настройки для зума
                     minZoom: 0.15,
                     maxZoom: 4,
                     boxSelectionEnabled: false,
@@ -175,8 +181,7 @@ export const TopologyGraph = forwardRef<TopologyGraphHandle>(
                             className={styles.toolBtn}
                             onClick={handleZoomIn}
                             title="Увеличить"
-                        >
-                            +
+                        ><FaPlus />
                         </button>
                         <button
                             type="button"
@@ -184,7 +189,7 @@ export const TopologyGraph = forwardRef<TopologyGraphHandle>(
                             onClick={handleZoomOut}
                             title="Уменьшить"
                         >
-                            −
+                            <FaMinus />
                         </button>
                         <button
                             type="button"
@@ -192,7 +197,7 @@ export const TopologyGraph = forwardRef<TopologyGraphHandle>(
                             onClick={handleFit}
                             title="Маштабировать топологию"
                         >
-                            Маштабировать
+                            <MdCenterFocusStrong />
                         </button>
                     </div>
                     <div

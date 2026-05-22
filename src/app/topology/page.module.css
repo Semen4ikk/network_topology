@@ -16,21 +16,18 @@
 
 .layoutBtn {
     padding: 10px 18px;
-    border: 1px solid #334155;
+    border: 1px solid #1e22a9;
     border-radius: 8px;
-    background: #1e293b;
+    background: #1e22a9;
     color: #f8fafc;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 600;
+    font-style: normal;
+    font-family: "Proxima Nova", sans-serif;
     cursor: pointer;
 }
 
 .layoutBtn:hover {
-    background: #334155;
-}
-
-.layoutMessage {
-    margin: 0;
-    font-size: 13px;
-    color: #64748b;
+    background: #282dda;
+    border-color: #282dda;
 }

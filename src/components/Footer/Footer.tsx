@@ -1,6 +1,12 @@
+import styles from './Footer.module.css'
+import {FaGithub, FaTelegramPlane} from "react-icons/fa";
+import {SiHbomax} from "react-icons/si";
+import {IoLogoGithub} from "react-icons/io";
+
 export function Footer(){
     return(
-        <footer>
+        <footer className={styles.footer}>
+            <div className={styles.hidden}></div>
             <svg xmlns="http://www.w3.org/2000/svg" width="194" height="48" viewBox="0 0 194 48" fill="none">
                 <rect width="194" height="48" fill="#9D9D9D"/>
                 <g id="disk_modules" clipPath="url(#clip0_55_1381)">
@@ -22,7 +28,21 @@ export function Footer(){
                     </clipPath>
                 </defs>
             </svg>
-            <a>© 2026 Semen4ikk. Все права защищены.</a>
+            <hr className={styles.line}/>
+            <div className={styles.gridParent}>
+                <a href={"https://github.com/Semen4ikk"} className={styles.myProfile}>
+                    <IoLogoGithub />
+                </a>
+                <a href={"https://t.me/SProkopets"} className={styles.myProfile}>
+                    <FaTelegramPlane />
+                </a>
+                <a className={styles.myProfile} title={"Шучу! Нет меня тут)"}>
+                    <SiHbomax />
+                </a>
+                <a className={styles.myGithub}>© 2026 Semen4ikk. Все права защищены.</a>
+            </div>
+
+
         </footer>
     )
 }
