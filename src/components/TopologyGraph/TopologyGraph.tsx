@@ -1,10 +1,20 @@
 'use client';
 
-import {forwardRef, useCallback, useEffect, useImperativeHandle, useRef} from 'react';
-import cytoscape, { type Core } from 'cytoscape';
+import {
+    forwardRef,
+    useCallback,
+    useEffect,
+    useImperativeHandle,
+    useRef,
+    useState,
+} from 'react';
+import cytoscape, { type Core, type EventObjectNode } from 'cytoscape';
 import styles from './TopologyGraph.module.css';
 import { useTopologyQuery } from '@/entities/TopologyData/query';
 import { filterTopology } from '@/features/filterTopology';
+import { buildNodePopoverContent } from '@/features/buildNodePopoverContent';
+import type { NodePopoverContent } from '@/features/buildNodePopoverContent';
+import { NodeInfoPopover } from '@/components/NodeInfoPopover/NodeInfoPopover';
 import {
     applyRectangleLayoutToCy,
     clearRectangleLayoutCache,
@@ -40,10 +50,21 @@ export const TopologyGraph = forwardRef<TopologyGraphHandle>(
         const containerRef = useRef<HTMLDivElement>(null);
         const cyRef = useRef<Core | null>(null);
         const resizeObserverRef = useRef<ResizeObserver | null>(null);
+        const cyEventsCleanupRef = useRef<(() => void) | null>(null);
         const dataRef = useRef<ReturnType<typeof filterTopology> | null>(null);
         const restoredFromStorageRef = useRef(false);
+        const onNodeShiftTapRef = useRef<
+            ((evt: EventObjectNode) => void) | null
+        >(null);
         const { data, isLoading, isError, error } = useTopologyQuery();
         const { bindCy, unbindCy, saveFromLayout, runLayout } = useGraphState();
+        const [popover, setPopover] = useState<{
+            content: NodePopoverContent;
+            x: number;
+            y: number;
+        } | null>(null);
+
+        const closePopover = useCallback(() => setPopover(null), []);
 
         const handleFit = useCallback(() => {
             if (cyRef.current) fitGraph(cyRef.current);
@@ -84,6 +105,24 @@ export const TopologyGraph = forwardRef<TopologyGraphHandle>(
             [runLayout, saveFromLayout],
         );
 
+        const openNodePopover = useCallback((evt: EventObjectNode) => {
+            const filtered = dataRef.current;
+            const panel = containerRef.current?.parentElement;
+            if (!filtered || !panel) return;
+
+            const nodeId = evt.target.id();
+            const content = buildNodePopoverContent(filtered, nodeId);
+            if (!content) return;
+
+            const panelRect = panel.getBoundingClientRect();
+            const x = evt.originalEvent.clientX - panelRect.left;
+            const y = evt.originalEvent.clientY - panelRect.top;
+
+            setPopover({ content, x, y });
+        }, []);
+
+        onNodeShiftTapRef.current = openNodePopover;
+
         const mountGraph = useCallback(
             (filtered: ReturnType<typeof filterTopology>, useStorage: boolean) => {
                 if (!containerRef.current) return;
@@ -99,6 +138,8 @@ export const TopologyGraph = forwardRef<TopologyGraphHandle>(
                 const elements = buildGraphElements(filtered, savedPositions);
 
                 resizeObserverRef.current?.disconnect();
+                cyEventsCleanupRef.current?.();
+                cyEventsCleanupRef.current = null;
                 cyRef.current?.destroy();
                 unbindCy();
 
@@ -114,6 +155,23 @@ export const TopologyGraph = forwardRef<TopologyGraphHandle>(
                 });
 
                 cyRef.current = cy;
+
+                const onNodeTap = (evt: EventObjectNode) => {
+                    if (evt.originalEvent.shiftKey) {
+                        onNodeShiftTapRef.current?.(evt);
+                        return;
+                    }
+                    closePopover();
+                };
+
+                const onBackgroundTap = (evt: { target: Core }) => {
+                    if (evt.target === cy) {
+                        closePopover();
+                    }
+                };
+
+                cy.on('tap', 'node', onNodeTap);
+                cy.on('tap', onBackgroundTap);
 
                 bindCy(cy, nodeIds, {
                     onRestoredFromStorage: () => {
@@ -134,8 +192,13 @@ export const TopologyGraph = forwardRef<TopologyGraphHandle>(
                 });
                 observer.observe(containerRef.current);
                 resizeObserverRef.current = observer;
+
+                cyEventsCleanupRef.current = () => {
+                    cy.removeListener('tap', 'node', onNodeTap);
+                    cy.removeListener('tap', onBackgroundTap);
+                };
             },
-            [bindCy, unbindCy, drawFreshLayout],
+            [bindCy, unbindCy, drawFreshLayout, closePopover],
         );
 
         const resetAndRedraw = useCallback(() => {
@@ -146,10 +209,11 @@ export const TopologyGraph = forwardRef<TopologyGraphHandle>(
 
             clearGraphStateStorage();
             clearRectangleLayoutCache();
+            closePopover();
             mountGraph(filtered, false);
 
             return { contextCount: getContextCount(filtered) };
-        }, [mountGraph]);
+        }, [mountGraph, closePopover]);
 
         const focusOnNode = useCallback(
             (nodeId: string, _position: NodePosition) => {
@@ -193,13 +257,22 @@ export const TopologyGraph = forwardRef<TopologyGraphHandle>(
             dataRef.current = filtered;
             mountGraph(filtered, true);
 
+            const onKeyDown = (e: KeyboardEvent) => {
+                if (e.key === 'Escape') closePopover();
+            };
+            window.addEventListener('keydown', onKeyDown);
+
             return () => {
+                window.removeEventListener('keydown', onKeyDown);
+                closePopover();
                 resizeObserverRef.current?.disconnect();
+                cyEventsCleanupRef.current?.();
+                cyEventsCleanupRef.current = null;
                 unbindCy();
                 cyRef.current?.destroy();
                 cyRef.current = null;
             };
-        }, [data, mountGraph, unbindCy]);
+        }, [data, mountGraph, unbindCy, closePopover]);
 
         if (isLoading) return <div>Загрузка...</div>;
         if (isError) return <div>Ошибка: {error?.message}</div>;
@@ -240,6 +313,14 @@ export const TopologyGraph = forwardRef<TopologyGraphHandle>(
                         ref={containerRef}
                         className={styles.topologyGraphContainer}
                     />
+                    {popover && (
+                        <NodeInfoPopover
+                            content={popover.content}
+                            x={popover.x}
+                            y={popover.y}
+                            onClose={closePopover}
+                        />
+                    )}
                 </div>
                 <div className={styles.stats}>
                     <span>Узлы: {filtered.nodes.length}</span>
