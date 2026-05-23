@@ -245,6 +245,9 @@ export const TopologyGraph = forwardRef<TopologyGraphHandle>(
                     <span>Узлы: {filtered.nodes.length}</span>
                     <span>Связи: {filtered.connections.length}</span>
                     <span>Контекстов: {contextCount}</span>
+                    <span className={styles.statusOk}>Статус: ok</span>
+                    <span className={styles.statusWarning}>Статус: warning</span>
+                    <span className={styles.statusError}>Статус: error</span>
                 </div>
             </div>
         );

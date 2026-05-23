@@ -3,8 +3,8 @@ import type { TopologyResponse } from './types';
 import type { NodePosition } from './layoutShared';
 
 const STATE_COLORS: Record<string, string> = {
-    ok: '#22c55e',
-    warning: '#eab308',
+    ok: '#00a605',
+    warning: '#efb910',
     error: '#ef4444',
     unknown: '#94a3b8',
 };
