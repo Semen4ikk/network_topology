@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Как запустить?
 
-## Getting Started
-
-First, run the development server:
-
+Сначала установите зависимости:
+```bash
+npm install
+```
+Потом запустите проект
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Откройте [http://localhost:3000/topology](http://localhost:3000/topology) в вашем браузере и посмотрите результат.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+# Проект: Визуализация топологии
 
-To learn more about Next.js, take a look at the following resources:
+Стек: NEXT, Tanstack Query, cytoscapeJS
+## Требования
+ - Элементы располагаются автоматически
+ - Учитывается вложенность элементов (поле parent в nodes)
+ - Данные фильтуются перед построением
+ - Соединение элементов корректное
+ - Базовое оформление страницы и топологии
+ - Отображение статуса ноды (поле state в nodes)
+ - Использование типов стрелки из ответа (в connections поле type)
+ - Сохранение позиций топологии при обновлении страницы
+ - Кнопка сброса сохраненного состояния топологии пользователем
+ - Поиск Ноды по названию
+ - SHIFT + клик открывает поповер с информацией о ноде
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Внешний вид:
+![Схема топологии](/images/all.png)
 
-## Deploy on Vercel
+## Компоненты:
+### Кнопка сброса состояния:
+![Схема топологии](/images/btnClear.png)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Сбрасывает состояние в локал сторедж, потом вызывает функцию перерисовки графа. 
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Поиск:
+![Схема топологии](/images/search.png)
+
+Реализован поиск, пользователь вводит название ноды( Например port 4),
+после нажимает найти и зум окна перемещается на искомую ноду. Если возникает какая то ошибка(Напрмиер нет такой ноды, или нет данных о ее координатах и тд),
+то под поиском появляется красное сообщение, предупреждающее о ошибке или неверных действиях пользователя
+
+### Навигация зумом графа:
+![Схема топологии](/images/zoomGraph.png)
+
+Есть три кнопки:
+- приблизить
+- отдалить
+- поместить весь граф в рамки
+
+### Информация
+![Схема топологии](/images/infoGraph.png)
+
+Показывает количество узлов, количество связей, количество контекстов после фильтрации. Также информирует 
+о цветах портов в графе. Зеленый цвет показывает успешный статус, Желтый цвет показывает предупреждающий статус, Красный цвет показывает статус ошибки
+
+### Подвал:
+![Схема топологии](/images/footer.png)
+
+В подвале находится логотип Ядра, при клике на который, перенаправляет на сайт ядра.
+Ниже контакты автора.
+
+### Контекст:
+![Схема топологии](/images/context4.png)
+
+Каждый контекст отображает вложенные свитчи и их порты. 
+
+### Поповеры:
+Были реализованы поповеры для более удобного отображения информации о ноде. При клике по ноде с зажатым SHIFT можно открыть.
+Закрыть можно нажав вне зоны поповера, нажав на кнопку крестик или нажав Esс.
+
+Поповер для контекста отображает название, внутренние свитчи и их порты со статусами.
+
+![Схема топологии](/images/popoverBig.png)
+
+Поповер для Свитча отображает название и какие порты есть со статусами.
+
+![Схема топологии](/images/popoverMedium.png)
+
+Поповер порта показывает название порта и его статус
+
+![Схема топологии](/images/popoverSmall.png)
