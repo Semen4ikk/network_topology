@@ -23,7 +23,7 @@ export default function Home() {
                     className={styles.layoutBtn}
                     onClick={handleReset}
                 >
-                    Сбросить и перерисовать
+                    Сбросить состояние
                 </button>
                 <TopologySearch graphRef={graphRef} />
             </section>
