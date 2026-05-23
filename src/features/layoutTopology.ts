@@ -113,14 +113,23 @@ export function computeRectangleLayout(data: TopologyResponse): RectangleLayoutR
         rowOffset[r] = rowOffset[r - 1] + rowHeights[r - 1] + CONTEXT_RECT_GAP;
     }
 
+    const fullGridWidth = colOffset[grid.cols - 1] + colWidths[grid.cols - 1] - colOffset[0];
+
     for (let i = 0; i < contextCount; i++) {
         const context = contexts[i];
         const col = i % grid.cols;
         const row = Math.floor(i / grid.cols);
-        const size = inflateContextSize(contextSizes[i]);
+        const itemsInRow = Math.min(grid.cols, contextCount - row * grid.cols);
+
+        let rowCenterOffsetX = 0;
+        if (itemsInRow < grid.cols) {
+            const usedWidth = colOffset[itemsInRow - 1] + colWidths[itemsInRow - 1] - colOffset[0];
+            rowCenterOffsetX = (fullGridWidth - usedWidth) / 2;
+        }
+
         positions.set(String(context.id), {
-            x: colOffset[col] + size.width / 2,
-            y: rowOffset[row] + size.height / 2,
+            x: colOffset[col] + colWidths[col] / 2 + rowCenterOffsetX,
+            y: rowOffset[row] + rowHeights[row] / 2,
         });
     }
 
