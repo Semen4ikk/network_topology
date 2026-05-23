@@ -13,6 +13,13 @@
     background-color: #7a7c7f;
     border: none;
 }
+.logo{
+    padding-left: 10px;
+
+}
+.logo:visited, .logo:active{
+    color: #ffffff;
+}
 .gridParent{
     display: grid;
     grid-template-columns: repeat(3, auto);
