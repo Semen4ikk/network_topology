@@ -1,31 +1,25 @@
 'use client';
 
-import {
-    forwardRef,
-    useCallback,
-    useEffect,
-    useImperativeHandle,
-    useRef,
-    useState,
-} from 'react';
-import cytoscape, { type Core, type EventObjectNode } from 'cytoscape';
+import {forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState,} from 'react';
+import cytoscape, {type Core, type EventObjectNode} from 'cytoscape';
 import styles from './TopologyGraph.module.css';
-import { useTopologyQuery } from '@/entities/TopologyData/query';
-import { filterTopology } from '@/features/filterTopology';
-import { buildNodePopoverContent } from '@/features/buildNodePopoverContent';
-import type { NodePopoverContent } from '@/features/buildNodePopoverContent';
-import { NodeInfoPopover } from '@/components/NodeInfoPopover/NodeInfoPopover';
-import {
-    applyRectangleLayoutToCy,
-    clearRectangleLayoutCache,
-    getContextCount,
-} from '@/features/layoutTopology';
+import {useTopologyQuery} from '@/entities/TopologyData/query';
+import {filterTopology} from '@/features/filterTopology';
+import type {NodePopoverContent} from '@/features/buildNodePopoverContent';
+import {buildNodePopoverContent} from '@/features/buildNodePopoverContent';
+import {NodeInfoPopover} from '@/components/NodeInfoPopover/NodeInfoPopover';
+import {applyRectangleLayoutToCy, clearRectangleLayoutCache, getContextCount,} from '@/features/layoutTopology';
 import {buildGraphElements, graphStyles} from '@/entities/TopologyData/buildGraphElements';
-import {clearGraphStateStorage, hasGraphStateInStorage, loadGraphSave, savedStateToPositions} from '@/features/graphSaveStorage';
-import { useGraphState } from '@/entities/TopologyData/hooks/useGraphState';
-import { MdCenterFocusStrong } from 'react-icons/md';
-import { FaMinus, FaPlus } from 'react-icons/fa';
-import type { NodePosition } from '@/entities/TopologyData/layoutShared';
+import {
+    clearGraphStateStorage,
+    hasGraphStateInStorage,
+    loadGraphSave,
+    savedStateToPositions
+} from '@/features/graphSaveStorage';
+import {useGraphState} from '@/entities/TopologyData/hooks/useGraphState';
+import {MdCenterFocusStrong} from 'react-icons/md';
+import {FaMinus, FaPlus} from 'react-icons/fa';
+import type {NodePosition} from '@/entities/TopologyData/layoutShared';
 
 const FIT_PADDING = 48;
 const FOCUS_ZOOM = 1.5;
@@ -105,7 +99,7 @@ export const TopologyGraph = forwardRef<TopologyGraphHandle>(
             [runLayout, saveFromLayout],
         );
 
-        const openNodePopover = useCallback((evt: EventObjectNode) => {
+        onNodeShiftTapRef.current = useCallback((evt: EventObjectNode) => {
             const filtered = dataRef.current;
             const panel = containerRef.current?.parentElement;
             if (!filtered || !panel) return;
@@ -118,10 +112,8 @@ export const TopologyGraph = forwardRef<TopologyGraphHandle>(
             const x = evt.originalEvent.clientX - panelRect.left;
             const y = evt.originalEvent.clientY - panelRect.top;
 
-            setPopover({ content, x, y });
+            setPopover({content, x, y});
         }, []);
-
-        onNodeShiftTapRef.current = openNodePopover;
 
         const mountGraph = useCallback(
             (filtered: ReturnType<typeof filterTopology>, useStorage: boolean) => {
