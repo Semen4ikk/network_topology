@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import {getSearchErrorMessage, searchNodeByLabelFromCache} from '@/features/searchNodeByLabel';
 import type { TopologyGraphHandle } from '@/components/TopologyGraph/TopologyGraph';
 import styles from './TopologySearch.module.css';
+import {IoSearch} from "react-icons/io5";
 
 type TopologySearchProps = {
     graphRef: RefObject<TopologyGraphHandle | null>;
@@ -57,7 +58,7 @@ export function TopologySearch({ graphRef }: TopologySearchProps) {
                     onKeyDown={handleKeyDown}
                 />
                 <button type="button" className={styles.findBtn} onClick={handleSearch}>
-                    Найти
+                    <IoSearch />
                 </button>
             </div>
             {message && (<p className={styles.messageError}>{message}</p>)}
