@@ -93,8 +93,33 @@
     border: 1px solid #e2e8f0;
 }
 
+.titleRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.nodeTitle {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    font-style: normal;
+    font-family: "Proxima Nova", sans-serif;
+    color: #0f172a;
+}
+
+.switchHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
 .switchName {
-    margin: 0 0 6px;
+    margin: 0;
     font-size: 13px;
     font-weight: 600;
     font-style: normal;

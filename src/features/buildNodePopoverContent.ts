@@ -10,17 +10,21 @@ export interface PopoverPortInfo {
 export interface PopoverSwitchInfo {
     id: string;
     label: string;
+    state: string;
     ports: PopoverPortInfo[];
 }
 
-export type NodePopoverContent = {
+export type NodePopoverContent =
+    | {
           type: 'context';
           label: string;
+          state: string;
           switches: PopoverSwitchInfo[];
       }
     | {
           type: 'switch';
           label: string;
+          state: string;
           ports: PopoverPortInfo[];
       }
     | {
@@ -56,9 +60,25 @@ function toPortInfo(port: TopologyNode): PopoverPortInfo {
     };
 }
 
-export function buildNodePopoverContent(data: TopologyResponse, nodeId: string): NodePopoverContent | null {
+function toSwitchInfo(
+    sw: TopologyNode,
+    childrenByParent: Map<string, TopologyNode[]>,
+): PopoverSwitchInfo {
+    return {
+        id: String(sw.id),
+        label: sw.label,
+        state: String(sw.state),
+        ports: (childrenByParent.get(String(sw.id)) ?? []).map(toPortInfo),
+    };
+}
+
+export function buildNodePopoverContent(
+    data: TopologyResponse,
+    nodeId: string,
+): NodePopoverContent | null {
     const node = data.nodes.find((n) => String(n.id) === nodeId);
     if (!node) return null;
+
     const childrenByParent = groupByParent(data.nodes);
     const nodeType = String(node.type);
 
@@ -67,11 +87,8 @@ export function buildNodePopoverContent(data: TopologyResponse, nodeId: string):
         return {
             type: 'context',
             label: node.label,
-            switches: switches.map((sw) => ({
-                id: String(sw.id),
-                label: sw.label,
-                ports: (childrenByParent.get(String(sw.id)) ?? []).map(toPortInfo),
-            })),
+            state: String(node.state),
+            switches: switches.map((sw) => toSwitchInfo(sw, childrenByParent)),
         };
     }
 
@@ -80,6 +97,7 @@ export function buildNodePopoverContent(data: TopologyResponse, nodeId: string):
         return {
             type: 'switch',
             label: node.label,
+            state: String(node.state),
             ports: ports.map(toPortInfo),
         };
     }
@@ -91,5 +109,6 @@ export function buildNodePopoverContent(data: TopologyResponse, nodeId: string):
             state: String(node.state),
         };
     }
+
     return null;
 }

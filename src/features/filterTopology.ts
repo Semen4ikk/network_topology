@@ -6,18 +6,30 @@ import type {
 
 const VALID_NODE_TYPES = new Set(['context', 'switch', 'port']);
 const VALID_NODE_STATES = new Set(['ok', 'warning', 'error', 'unknown']);
-const VALID_CONNECTION_TYPES = new Set(['line', 'arrow', 'dashed', 'arrowed']);
+const VALID_CONNECTION_TYPES = new Set(['line', 'arrow', 'dashed']);
 
 export function normalizeId(id: string | number): string {
     return String(id);
 }
 
+function isValidNodeId(node: TopologyNode): boolean {
+    if (typeof node.id !== 'string' || !node.id.trim()) {
+        return false;
+    }
+
+    const type = String(node.type);
+    if (type === 'port' && node.parent) {
+        const parent = String(node.parent);
+        return node.id.startsWith(`${parent}/`);
+    }
+
+    return true;
+}
+
 function isValidNode(node: TopologyNode): boolean {
-    const id = normalizeId(node.id);
-    if (!id) return false;
+    if (!isValidNodeId(node)) return false;
     if (!VALID_NODE_TYPES.has(String(node.type))) return false;
     return VALID_NODE_STATES.has(String(node.state));
-
 }
 
 function isValidConnection(connection: TopologyConnection): boolean {
@@ -26,7 +38,6 @@ function isValidConnection(connection: TopologyConnection): boolean {
     const target = normalizeId(connection.target);
     if (!source || !target) return false;
     return source !== target;
-
 }
 
 export function filterTopology(data: TopologyResponse): TopologyResponse {
